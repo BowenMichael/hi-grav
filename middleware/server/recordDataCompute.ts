@@ -13,5 +13,5 @@ export async function ComputeRecordData() {
 
     const avg = sum / records.length;
 
-    return {averageGrav : avg};
+    return {averageGrav : avg, lastDayRecords : records.length};
 }

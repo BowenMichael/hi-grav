@@ -13,9 +13,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }}
 }
 
-export default function Home(props : {gravRecordNumber : number, gravRecordData : { averageGrav : number }}) {
+export default function Home(props : {gravRecordNumber : number, gravRecordData : { averageGrav : number, lastDayRecords : number }}) {
   const {gravRecordNumber, gravRecordData} = props;
-  const [gravRecords, setGravRecords] = useState(gravRecordNumber);
+  const [gravRecords, setGravRecords] = useState(gravRecordData.lastDayRecords);
   const [gravRecordsData, setGravRecordsData] = useState(gravRecordData);
   const [submitted, setSubmitted] = useState(false)
   const [radioValue, setRadioValue] = useState(0);
