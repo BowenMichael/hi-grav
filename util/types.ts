@@ -34,6 +34,7 @@ export interface ProjectRecord {
         };
     }
 }*/
+/*
 
 declare module 'styled-components' {
     interface DefaultTheme {
@@ -41,4 +42,4 @@ declare module 'styled-components' {
         text: string
         name: string
     }
-}
+}*/
