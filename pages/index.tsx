@@ -1,118 +1,89 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import {ChangeEvent, useState} from "react";
+import {GetGravRecords, GetGravRecordsData, PostGravRecord} from "../middleware/hy-grav";
+import NavBar from "../components/NavBar";
+import {Button, ButtonGroup, Card, Col, Container, Form, Row, ToggleButton} from "react-bootstrap";
+import bg from '../public/background.png'
+import {GetServerSidePropsContext} from "next";
+import {GET_PROPERTIES, GetAPIUrlWithPath} from "../middleware/util";
 
-const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {props : {
+      gravRecordNumber : await GetGravRecords(),
+      gravRecordData : await GetGravRecordsData()
+  }}
+}
+
+export default function Home(props : {gravRecordNumber : number, gravRecordData : { averageGrav : number }}) {
+  const {gravRecordNumber, gravRecordData} = props;
+  const [gravRecords, setGravRecords] = useState(gravRecordNumber);
+  const [gravRecordsData, setGravRecordsData] = useState(gravRecordData);
+  const [submitted, setSubmitted] = useState(false)
+  const [radioValue, setRadioValue] = useState(0);
+
+  const radios = [
+    { name: 'HyGrav', value: 1 },
+    { name: 'LowGrav', value: -1 },
+  ];
+
+  function SubmitHyGravForm(e : ChangeEvent<HTMLFormElement>){
+    e.preventDefault();
+    PostGravRecord(radioValue)
+    setGravRecords(gravRecords +1)
+
+    setSubmitted(true)
+  }
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <>
+      <NavBar/>
+      <Container className={'home-container'} style={{
+        backgroundImage: `url(${bg.src})`,
+        width: '100%',
+        height: '100%',
+      }}>
+        <Col xs={10} md={5} lg={4}>
+          <Card className={'p-5 w-100'} >
+            <Card.Title>
+              Welcome to hyGrav
+            </Card.Title>
+            <Card.Body>
+              <Card.Text>Keep a record of your hy and low grav days. Compare against the average of recorded entries</Card.Text>
+              <Col>
+                {!submitted && <Form onSubmit={SubmitHyGravForm}>
+                  <Row className={'mb-3'}>
+                    <ButtonGroup className={'w-100'}>
+                      {radios.map((radio, idx) => (
+                          <ToggleButton
+                              key={idx}
+                              id={`radio-${idx}`}
+                              type="radio"
+                              variant={'outline-success'}
+                              name="radio"
+                              value={radio.value}
+                              checked={radioValue === radio.value}
+                              onChange={(e) =>  setRadioValue(Number(e.currentTarget.value))}
+                          >
+                            {radio.name}
+                          </ToggleButton>
+                      ))}
+                    </ButtonGroup>
+                  </Row>
+                  <Row>
+                    <Button type={'submit'}>
+                      Submit
+                    </Button>
+                  </Row>
+                </Form>}
+                {submitted && <Card.Text>
+                  Thank you!
+                </Card.Text>}
+              </Col>
+            </Card.Body>
+            <Form.Text>Total Enteries: {gravRecords}</Form.Text>
+            <Form.Text>Avg Grav: {gravRecordsData?.averageGrav}</Form.Text>
+          </Card>
+        </Col>
+      </Container>
+    </>
   )
 }
