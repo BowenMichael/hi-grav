@@ -31,7 +31,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const gravStatus = body.gravStatus
 
             const newGravRecord = await GravRecords.create({date : Date.now(), gravStatus})
-            console.log(newGravRecord)
             res.json(newGravRecord)
             return
         }

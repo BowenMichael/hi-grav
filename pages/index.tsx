@@ -4,7 +4,6 @@ import NavBar from "../components/NavBar";
 import {Button, ButtonGroup, Card, Col, Container, Form, Row, ToggleButton} from "react-bootstrap";
 import bg from '../public/background.png'
 import {GetServerSidePropsContext} from "next";
-import {GET_PROPERTIES, GetAPIUrlWithPath} from "../middleware/util";
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
